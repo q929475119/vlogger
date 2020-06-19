@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>搜索结果</title>
+</head>
+<body>
+<div>
+
+    {% for num in result %}
+      id：{{num.id}} 标题：{{ num.title }}  作者：{{ num.initiator}}<br>
+    {% endfor %}
+</div>
+<script type="text/javascript" src="/static/js/search.js"></script>
+</body>
+</html>

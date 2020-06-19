@@ -1,0 +1,531 @@
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>test</title>#}
+{#    <script src="/static/vue.js"></script>#}
+{#    <script src="/static/axios.min.js"></script>#}
+{#    <script src="/static/components/comment-item.js"></script>#}
+{#</head>#}
+{#<body>#}
+{% extends 'login_base.html' %}
+{% block title %}同新云论坛{% endblock %}
+{% block content %}
+{% verbatim %}
+<div class="container">
+    <script src="/static/vue.js"></script>
+    <script src="/static/axios.min.js"></script>
+    <script src="/static/components/comment-item.js"></script>
+    <div class="main-left">
+        <p class="post_nav">
+            <a href="/index/" target="_blank">论坛首页></a>
+            <a href="/block" target="_blank">{{ block_name }}></a>
+            <span>{{ title }}</span>
+        </p>
+        <div class="content">
+            <h1 class="title">{{ title }}</h1>
+            <p class="tips">
+                同新云&nbsp;&nbsp;{{ post_time }}
+            </p>
+            <div class="post-content"><p v-html="post_content"></p>
+                <div v-if="post_img">
+                    <img :src="">
+                </div>
+            </div>
+            <div class="menubar">
+                <span class="reply"><i style="{'background-image': url(getReplyIcon())}"></i>回复</span>
+                <span class="like" @click="like_post" :style="{color:LikeIcon.color}"><i
+                        :style="{backgroundImage:`url(${LikeIcon.con})`}"></i>喜爱</span>
+                <span class="collect" @click="collect_post" :style="{color:CollectIcon.color}"><i
+                        :style="{backgroundImage: `url(${CollectIcon.con})`}"></i>收藏</span>
+                <span class="dislike" @click="dislike_post" :style="{color:DislikeIcon.color}"><i
+                        :style="{backgroundImage: `url(${DislikeIcon.con})`}"></i>不喜欢</span>
+            </div>
+            <div class="comment_list">
+                <p class="comment-list-title">
+                    <img src="/static/post-pic/comment-pre-icon.png">
+                    热门评论
+                </p>
+                <comment-item v-for="props in comments" v-bind="props">
+                </comment-item>
+            </div>
+        </div>
+    </div>
+    <div class="main-right">2</div>
+</div>
+{% endverbatim %}
+
+
+<script type="application/javascript">
+    var post_id ={{ post_id }}
+    var post_time = '{{ post_time }}';
+    var title = '{{title}}';
+    var block_name = '{{ block_name }}';
+    var post_content = '{% autoescape off%}{{ post_content }}{% endautoescape %}';
+    var comments ={{ comments|safe }};
+    var is_login='{{ request.session.is_login }}'
+    var post_img='{{ post_img }}'
+    new Vue({
+        el: '.post_nav',
+        data: {
+            block_name: block_name,
+            title: title
+        }
+    })
+    var like_post = {{ like_post }};
+    var collect_post = {{ collect_post }};
+    var dislike_post = {{ dislike_post }};
+
+    function Icon(para, name) {
+        <!--para为0或1-->
+        this.like = para
+        <!--name存放图片的名称-->
+        this.name = name
+        Icon.prototype.set = function (para) {
+            this.like = para
+        }
+        Icon.prototype.getIcon = function () {
+            console.log('a' + this.like)
+            if (this.like === 0)
+                return '/static/icon/' + this.name
+            else
+                return '/static/icon2/' + this.name
+        }
+        Icon.prototype.getColor = function () {
+            if (this.like === 0)
+                return ''
+            else
+                return '#7c5dc7'
+        }
+    }
+
+    new Vue({
+        el: '.content',
+        data() {
+            like1 = new Icon(like_post, 'like.svg')
+            collect1 = new Icon(collect_post, 'collect.svg')
+            dislike1 = new Icon(dislike_post, 'dislike.svg')
+            return {
+                LikeIcon: {
+                    con: like1.getIcon(),
+                    color: like1.getColor()
+                },
+                CollectIcon: {
+                    con: collect1.getIcon(),
+                    color: collect1.getColor()
+                },
+                DislikeIcon: {
+                    con: dislike1.getIcon(),
+                    color: dislike1.getColor()
+                },
+                title: title,
+                post_time: post_time,
+                post_content: post_content,
+                post_img:post_img,
+                comments: comments
+            }
+        },
+        methods: {
+            display() {
+            },
+            like_post() {
+                if(is_login!=='True')
+                {
+                    window.alert('请登录')
+                    return
+                }
+                console.log('like');
+                like_post = 1 - like_post;
+                like1.set(like_post);
+                this.$set(this.LikeIcon, "con", like1.getIcon());
+                this.$set(this.LikeIcon, "color", like1.getColor());
+                axios.post('/like1/', {
+                    method: 'like_post',
+                    value:like_post,
+                    post_id: post_id
+                })
+                    .then(function (response) {
+                        console.log('like commit success');
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+            },
+            collect_post() {
+                 if(is_login!=='True')
+                {
+                    window.alert('请登录')
+                    return
+                }
+                collect_post = 1 - collect_post;
+                collect1.set(collect_post);
+                this.$set(this.CollectIcon, "con", collect1.getIcon());
+                this.$set(this.CollectIcon, "color", collect1.getColor());
+                axios.post('/like1/', {
+                    method: 'collect_post',
+                    value:collect_post,
+                    post_id: post_id
+                })
+                    .then(function (response) {
+                        console.log('collect commit success');
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            dislike_post() {
+                 if(is_login!=='True')
+                {
+                    window.alert('请登录')
+                    return
+                }
+                dislike_post = 1 - dislike_post;
+                dislike1.set(dislike_post);
+                this.$set(this.DislikeIcon, "con", dislike1.getIcon());
+                this.$set(this.DislikeIcon, "color", dislike1.getColor());
+                axios.post('/like1/', {
+                    method: 'dislike_post',
+                    value:dislike_post,
+                    post_id: post_id
+                })
+                    .then(function (response) {
+                        console.log('dislike commit success');
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+        }
+    });
+</script>
+<style>
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol
+    }
+
+    .container {
+        display: block;
+        width: 1100px;
+        margin: 0 auto;
+    }
+
+    .main-left {
+        float: left;
+        width: 668px;
+        padding-right: 55px;
+    }
+
+    .main-right {
+        width: 280px;
+        float: left;
+    }
+
+    .post_nav a {
+        text-decoration: none;
+        color: #000000;
+    }
+
+    .post_nav span {
+        width: 456px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .post_nav {
+        margin-bottom: 15px;
+    }
+
+    .tips {
+        text-decoration: none;
+        border-bottom: 1px solid #0d3349;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+    }
+
+    .content {
+        border: 1px solid #ebebeb;
+        padding: 24px;
+    }
+
+    .menubar {
+        margin-top: 24px;
+    }
+
+    .menubar span {
+        width: 112px;
+        height: 32px;
+        line-height: 32px;
+        display: inline-block;
+        margin-right: 24px;
+        text-align: center;
+        cursor: pointer;
+        font-size: 13px;
+    }
+
+    .menubar .reply {
+        border: 1px solid #ebebeb;
+        border-radius: 16px;
+    }
+
+    .menubar i {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        background-size: 100% 100%;
+        vertical-align: -4px;
+        margin-right: 5px;
+    }
+
+    .menubar .reply i {
+        background-image: url(/static/icon/reply.svg);
+    }
+
+    .menubar .reply {
+        color: #7c5dc7;
+    }
+
+
+    .comment_list {
+        margin-top: 60px;
+    }
+
+    .comment-list-title {
+        padding-bottom: 20px;
+        border-bottom: 1px solid #ebebeb;
+    }
+
+    .comment-list-title image {
+        top: 5px;
+        position: relative;
+    }
+
+    .comment-item {
+        display: block;
+    }
+
+    .comment-item .comment-info {
+        display: block;
+    }
+
+    .comment-item .user-pic {
+        display: inline-block;
+        height: 44px;
+        width: 44px;
+        vertical-align: top;
+    }
+
+    .user-pic img {
+        height: 100%;
+        width: 100%;
+        border-radius: 50% 50%;
+    }
+
+    .user-info {
+        margin-left: 12px;
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    .comment-user-info {
+        font-weight: 600;
+        color: #333;
+        font-size: 14px;
+    }
+
+    .comment-time {
+        margin-top: 8px;
+        font-size: 13px;
+        color: #999;
+    }
+
+    .comment-con {
+        padding-left: 58px;
+        line-height: 26px;
+        font-size: 16px;
+        margin-bottom: 16px;
+    }
+
+    .comment-footer {
+        padding-left: 58px;
+        display: block;
+        overflow: hidden;
+    }
+
+    .comment-footer i {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        background-size: 100% 100%;
+        vertical-align: -4px;
+        margin-right: 5px;
+    }
+
+    .comment-footer div {
+        margin-right: 24px;
+        font-size: 14px;
+        line-height: 18px;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+    .comment-footer span {
+        float: right;
+        color: #999;
+        margin-top: 10px;
+    }
+
+    .comment-footer div:hover {
+        color: #7c5dc7;
+    }
+
+    .comment-footer .reply i {
+        background-image: url(/static/icon/reply2.svg);
+    }
+
+    .comment-footer .like i {
+        background-image: url(/static/icon/like.svg);
+    }
+
+    .comment-footer .collect i {
+        background-image: url(/static/icon/collect.svg);
+    }
+
+    .comment-footer .dislike i {
+        background-image: url(/static/icon/dislike.svg);
+    }
+
+    .comment-footer .reply:hover i {
+        background-image: url(/static/icon2/reply2.svg);
+    }
+
+    .comment-footer .like:hover i {
+        background-image: url(/static/icon2/like.svg);
+    }
+
+    .comment-footer .collect:hover i {
+        background-image: url(/static/icon2/collect.svg);
+    }
+
+    .comment-footer .dislike:hover i {
+        background-image: url(/static/icon2/dislike.svg);
+    }
+
+    <!--
+    {#  replyitem格式设置  #}
+    -->
+    .reply-items {
+        margin-left: 58px;
+        padding: 20px 18px;
+        display: block;
+        background-color: #ebebeb;
+    }
+
+    .reply-item {
+        display: block;
+    }
+
+    .reply-item .reply-user-pic {
+        display: inline-block;
+        border-radius: 50%;
+        height: 40px;
+        width: 40px;
+        vertical-align: top;
+    }
+
+    .reply-user-pic img {
+        border-radius: 50% 50%;
+        height: 100%;
+        width: 100%;
+    }
+
+    .reply-user-info {
+        margin-left: 12px;
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    .reply-user-name {
+        color: #000;
+        font-size: 12px;
+    }
+
+    .reply-time {
+        margin-top: 8px;
+        font-size: 12px;
+        color: #999;
+    }
+
+    .reply-con {
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+
+    .reply-footer {
+        display: block;
+        overflow: hidden;
+    }
+
+    .reply-footer i {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        background-size: 100% 100%;
+        vertical-align: -4px;
+        margin-right: 5px;
+    }
+
+    .reply-footer div {
+        margin-right: 24px;
+        font-size: 14px;
+        line-height: 18px;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+    .reply-footer span {
+        float: right;
+        color: #999;
+        margin-top: 10px;
+    }
+
+    .reply-footer div:hover {
+        color: #7c5dc7;
+    }
+
+    .reply-footer .reply i {
+        background-image: url(/static/icon/reply2.svg);
+    }
+
+    .reply-footer .like i {
+        background-image: url(/static/icon/like.svg);
+    }
+
+    .reply-footer .collect i {
+        background-image: url(/static/icon/collect.svg);
+    }
+
+    .reply-footer .dislike i {
+        background-image: url(/static/icon/dislike.svg);
+    }
+
+    .reply-footer .reply:hover i {
+        background-image: url(/static/icon2/reply2.svg);
+    }
+
+    .reply-footer .like:hover i {
+        background-image: url(/static/icon2/like.svg);
+    }
+
+    .reply-footer .collect:hover i {
+        background-image: url(/static/icon2/collect.svg);
+    }
+
+    .reply-footer .dislike:hover i {
+        background-image: url(/static/icon2/dislike.svg);
+    }
+</style>
+{% endblock %}
+{#</body>#}
+{#</html>#}

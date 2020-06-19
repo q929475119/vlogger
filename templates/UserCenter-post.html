@@ -1,0 +1,121 @@
+{#继承父模板#}
+{% extends 'UserCenter-base.html' %}
+{% load static %}
+{% load message_extras %}
+{% block MainContent %}
+    <!-- 具体内容 -->
+    <div class="PostShortcut">
+        <div class="Post ProfileActivities" id="Profile-activities">
+
+            <div class="Post-header">
+                <h4 class="Post-headerText"><span>我的帖子</span></h4>
+                <div class="Post-headerOptions">
+                    <div>
+                        {#通过监听选择的改变，进而跳转到指定链接；同时选择状态由当前的路径决定#}
+                        <label>
+                            <select class="com-opt" onchange="window.location = this.value">
+                                <option value="{% url 'post' loginuser=user.account %}"
+                                        {% ifequal '/usercenter/posts/' request.path|slice:'18' %}selected{% endifequal %}>
+                                    按时间排序
+                                </option>
+                                <option value="{% url 'posts_votes' loginuser=user.account %}"
+                                        {% ifequal '/usercenter/posts/by_votes' request.path|slice:'26' %}selected{% endifequal %}>
+                                    按赞同排序
+                                </option>
+                                <option value="{% url 'posts_votes_collect' loginuser=user.account %}"
+                                        {% ifequal '/usercenter/posts/by_votes_collect' request.path|slice:'34' %}selected{% endifequal %}>
+                                    按收藏排序
+                                </option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            {% if not first_comments %}
+                <div class="no_show">
+                    <div>还没有帖子</div>
+                </div>
+            {% endif %}
+
+            <div>
+                {#一个奇怪的问题，div加上tabindex="0"，在chrome点击这个div区域会出现蓝色边框#}
+                {% for first_comment in first_comments %}
+                    <div class="Post-item">
+                        <div class="small_post">
+                            <div class="user-info">
+                                <div class="profilepicture">
+                                    <a href="/usercenter/{{ first_comment.owner.account }}">
+                                        <img width="50" height="50" src="{{ first_comment.owner.ProfilePicture }}"
+                                             style="border-radius:50% 50%">
+                                    </a>
+                                </div>
+                                <div class="account-info">
+                                    <div class="account">
+                                        <a href="/usercenter/{{ first_comment.owner.account }}" style="color:black;">
+                                            {{ first_comment.post.initiator.nickname }}
+                                        </a>
+                                    </div>
+                                    <div class="time">
+                                        发布于：{{ first_comment.post.time }}
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="text">
+                                <div class="title">
+                                    <a href="/post_detail/{{ first_comment.post.id }}"
+                                       style="text-decoration:none;color:black;">
+                                        {{ first_comment.post.title }}
+                                    </a>
+                                </div>
+                                <div class="content">
+                                    <a href="/post_detail/{{ first_comment.post.id }}"
+                                       style="text-decoration:none;color:black;">
+                                        {{ first_comment.discussion|truncatewords:60 }}
+                                    </a>
+                                </div>
+                            </div>
+                            {#如果会话中没有登录账户，那么不能点击这三个按钮；否则除了前端样式改变，还需要从数据库中获取样式，#}
+                            {#这里通过所有外键是帖子的集合判断是否有点赞、反对、收藏#}
+                            {% if request.session.user_account %}
+                                <div class="handle" id="small_post{{ first_comment.post.id }}">
+                                    <li class="like"
+                                        style="color:{% post_color_like request.session.user_account first_comment.post.id %}"
+                                        data-a="{{ first_comment.post.id }}"><span class="zan"><i
+                                            class="{% post_style_like request.session.user_account first_comment.post.id %}"
+                                            style="margin-right:3px"></i>点赞</span>
+                                    </li>
+                                    <li class="dislike"
+                                        style="color:{% post_color_oppose request.session.user_account first_comment.post.id %}"
+                                        data-a="{{ first_comment.post.id }}"><span
+                                            class="fandui"><i
+                                            class="{% post_style_oppose request.session.user_account first_comment.post.id %}"
+                                            style="margin-right:3px"></i>反对</span>
+                                    </li>
+                                    <li class="collect"
+                                        style="color:{% post_color_collect request.session.user_account first_comment.post.id %}"
+                                        data-a="{{ first_comment.post.id }}"><span
+                                            class="shoucang"><i
+                                            class="{% post_style_collect request.session.user_account first_comment.post.id %}"
+                                            style="margin-right:3px"></i>收藏</span>
+                                    </li>
+                                </div>
+                            {% else %}
+                                <div class="handle">
+                                    <li class="like" style="color: #808080;cursor: default"><span><i
+                                            class="fa fa-thumbs-o-up" style="margin-right:3px"></i>点赞</span></li>
+                                    <li class="dislike" style="color:#808080;cursor: default"><span><i
+                                            class="fa fa-thumbs-o-down" style="margin-right:3px"></i>反对</span></li>
+                                    <li class="collect" style="color:#808080;cursor: default"><span><i
+                                            class="fa fa-star-o" style="margin-right:3px"></i>收藏</span>
+                                    </li>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

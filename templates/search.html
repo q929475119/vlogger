@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>begin</title>
+   <link rel="stylesheet" type="text/css" href="/static/css/search.css">
+   <link href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script type="text/javascript" src="/static/js/jquery-3.5.1.js"></script>
+</head>
+<body>
+    <div class="search" data-user="{{ user }}">
+        <form method="POST" action="/index/{{ user }}">
+             {% csrf_token %}
+            <input type="text" autocomplete="off" name="content" id="search_txt" placeholder="搜索话题，帖子">
+            <button type="submit" id="search_btn"></button>
+        </form>
+    </div>
+
+    <div class="small_posts" data-posts="{{ result }}" id="s"></div>
+   <script type="text/javascript" src="/static/js/search.js"></script>
+</body>
+</html>

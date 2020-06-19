@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>message_s</title>
+{#    帖子缩略视图外联css#}
+    <link rel="stylesheet" type="text/css" href="/static/css/small_post.css">
+     <script type="text/javascript" src="/static/js/jquery-3.5.1.js"></script>
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+</head>
+<body>
+
+{#帖子缩略视图#}
+<div class="small_post"  data-loginuser="{{ loginuser }}">
+    <div class="user-info">
+        <div class="profilepicture">
+            <a href="/usercenter/{{ post.initiator }}">
+             <img  width="50" height="50" src="{{profilepicture}}" style="border-radius:50% 50%">
+            </a>
+        </div>
+        <div class="account-info">
+            <div class="account">
+                <a href="/usercenter/{{ post.initiator }}" style="color:black;">
+                    {{ post.initiator.nickname }}
+                </a>
+            </div>
+            <div class="time">
+                发布于：{{ post.time }}
+            </div>
+        </div>
+
+    </div>
+    <div class="text">
+        <div class="title">
+            <a href="/post_detail/{{ post.id }}" style="text-decoration:none;color:black;">
+                {{ post.title }}
+            </a>
+        </div>
+        <div class="content">
+            <a href="/post_detail/{{ post.id }}" style="text-decoration:none;color:black;">
+                {{ content|truncatewords:60 }}
+            </a>
+        </div>
+    </div>
+    <div class="handle" id="small_post{{ post.id }}">
+        <li class="like"  style="color:{{ likecolor }}" data-a="{{ post.id }}"  ><span class="zan"><i class="{{ like_icon }}" style="margin-right:3px"></i>点赞</span></li>
+        <li class="dislike" style="color:{{ dislikecolor }}"data-a="{{ post.id }}" ><span class="fandui"><i class="{{ dislike_icon }}" style="margin-right:3px"></i>反对</span></li>
+        <li class="collect"  style="color:{{ collectcolor }}"data-a="{{ post.id }}"  ><span class="shoucang"><i class="{{ collect_icon }}" style="margin-right:3px"></i>收藏</span></li>
+    </div>
+
+{#     <script type="text/javascript" src="/static/js/small_post.js"></script>#}
+</div>
+</body>
+</html>

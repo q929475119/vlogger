@@ -1,0 +1,121 @@
+.user-info {
+    margin-top: 15px;
+    display: block;
+}
+
+.profilepicture {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    vertical-align: top;
+    margin-left: 8px;
+}
+
+.account-info {
+    display: inline-block;
+    margin-left: 8px;
+}
+
+.account {
+    font-weight: 600;
+    color: #333;
+    font-size: 16px;
+    text-decoration: underline;
+}
+
+.time {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #999;
+}
+
+.text {
+    padding-left: 70px;
+    font-size: 16px;
+    width: 500px;
+    height: 110px;
+    padding-bottom: 0;
+}
+
+.title {
+
+    font-weight: bold;
+}
+
+.content {
+    word-break: break-all;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+
+}
+
+
+.handle {
+    display: block;
+    overflow: hidden;
+    border-top-color: #f2f2f5;
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-bottom: solid 1px #f2f2f5;
+}
+
+.like {
+    float: left;
+    width: 33%;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    margin: 11px 0;
+    cursor: pointer;
+}
+
+
+.zan:hover {
+    color: #eb7350;
+}
+
+.dislike {
+    float: left;
+    width: 33%;
+    border: none;
+    /*color: white;*/
+    /*padding: 10px 32px;*/
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    margin: 11px 0;
+    cursor: pointer;
+    border-left-width: 1px;
+    border-left-color: #d9d9d9;
+    border-left-style: solid;
+}
+
+.fandui:hover {
+    color: #eb7350;
+}
+
+.collect {
+    float: left;
+    width: 33%;
+    border: none;
+    /*color: white;*/
+    /*padding: 10px 32px;*/
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    margin: 11px 0;
+    cursor: pointer;
+    border-left-width: 1px;
+    border-left-color: #d9d9d9;
+    border-left-style: solid;
+}
+
+.shoucang:hover {
+    color: #eb7350;
+}

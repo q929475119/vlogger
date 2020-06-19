@@ -1,0 +1,511 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #f6f6f6;
+    font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, WenQuanYi Micro Hei, sans-serif;
+    font-size: 15px;
+    color: #1a1a1a;
+    -webkit-tap-highlight-color: rgba(26, 26, 26, 0);
+    height: 100%;
+
+}
+
+body:not(.Body--isAppleDevice) .ProfileMain-tabs .is-active {
+    font-weight: 600;
+    font-synthesis: style;
+}
+
+div {
+    display: block;
+}
+
+/*头部样式*/
+.ProfileHeader {
+    position: relative;
+    width: 1000px;
+    margin: 0 auto;
+    background-color: #FFFFFF;
+}
+
+.ProfileHeader-main {
+    position: relative;
+    margin: 0 20px 24px;
+    background: #FFFFFF;
+}
+
+.Cover {
+    position: relative;
+    height: 210px;
+    /*overflow: visible; !**!*/
+    border-top-right-radius: 1px;
+    border-top-left-radius: 1px;
+}
+
+.CoverImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    -o-object-fit: cover;
+}
+
+.ProfileHeader-avatar {
+    position: absolute;
+    top: -25px;
+    left: 0;
+    z-index: 1;
+}
+
+.AvatarMask {
+    border: 4px solid #f6f6f6;
+    border-radius: 8px;
+}
+
+.AvatarBox {
+    position: relative;
+    display: inline-block;
+    left: 15px;
+}
+
+.Button {
+    display: inline-block;
+    padding: 0 16px;
+    font-size: 14px;
+    line-height: 22px;
+    text-align: center;
+    cursor: pointer;
+    color: #8590a6;
+    background: none;
+    border: 1px solid;
+    border-radius: 3px;
+    bottom: 120px;
+}
+
+/* 增大按钮的点击范围 */
+#AvatarButton::after {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+}
+
+.ProfileHeader-content {
+    padding-top: 16px;
+    padding-left: 32px;
+    border-left: 160px solid transparent;
+}
+
+
+.ProfileHeader-contentHead {
+    position: relative;
+    padding-right: 100px;
+}
+
+.ProfileHeader-title {
+    margin-top: 10px;
+    white-space: nowrap;
+}
+
+.ProfileHeader-name {
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 30px;
+}
+
+.ProfileHeader-contentBody {
+    margin-top: 40px;
+}
+
+.ProfileHeader-email {
+    font: inherit;
+    font-size: 16px;
+}
+
+.ProfileHeader-button {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+
+/*主体样式*/
+
+.ProfileMain {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    width: 1000px;
+    min-height: 100vh;
+    padding: 0 16px;
+    margin: 10px auto;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+}
+
+
+.Profile-mainColumn {
+    width: 694px;
+    background-color: #FFFFFF;
+}
+
+.ProfileMain-tabs {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1;
+    flex: 1 1;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+}
+
+.Tabs {
+    border-bottom: 1px solid #f6f6f6;
+}
+
+.Tabs-link {
+    position: relative;
+    display: inline-block;
+    padding: 14px 0;
+    font-size: 16px;
+    line-height: 22px;
+    color: #1a1a1a;
+    text-align: center;
+}
+
+.Tabs-link.is-active:after {
+    position: absolute;
+    right: 0;
+    bottom: -1px;
+    left: 0;
+    height: 3px;
+    background: #0084ff;
+    content: "";
+    font-weight: bold;
+}
+
+
+a {
+    text-decoration: none;
+}
+
+ul {
+    display: block;
+    list-style-type: disc;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 40px;
+}
+
+li {
+    list-style-type: none;
+    display: list-item;
+    text-align: -webkit-match-parent;
+}
+
+.ProfileMain-tabs .Tabs-item {
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    padding: 0 12px;
+}
+
+.Tabs-item {
+    display: inline-block;
+    padding: 0 20px;
+}
+
+.Tabs-meta {
+    margin-left: 6px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #999;
+}
+
+.Post-header {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    height: 50px;
+    margin: 0 20px;
+    border-bottom: 1px solid #f6f6f6;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+h4 {
+    display: block;
+    margin-block-start: 1.33em;
+    margin-block-end: 1.33em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+}
+
+.Post-headerOptions {
+    font-size: 14px;
+}
+
+.Post-headerOptions {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    align-self: center;
+    font-size: 14px;
+}
+
+.Post-item {
+    position: relative;
+    padding: 0 10px;
+}
+
+#CornerButtons {
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+    display: none;
+}
+
+#CornerButtons:hover {
+    cursor: pointer;
+}
+
+.no_show {
+    margin: 0;
+    padding: 70px;
+    text-align: center;
+}
+
+/*下拉菜单样式改变*/
+.com-opt {
+    cursor: pointer;
+    color: #afbac0;
+    border: none;
+    outline: none;
+    font-size: 1.1em;
+}
+
+
+/**** 修改密码的样式  ****/
+.bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    opacity: .5;
+    filter: Alpha(opacity=50);
+    z-index: 99;
+    display: none;
+}
+
+.dialog {
+    position: fixed;
+    color: #7c7c7c;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: auto;
+    z-index: 100;
+    display: none;
+}
+
+.dialogbox {
+    position: relative;
+    width: 400px;
+    min-height: 300px;
+    padding: 15px;
+    margin: 150px auto; /*auto只能水平居中，垂直的还需要设置*/
+    background: #fff;
+    overflow: hidden;
+    display: none;
+}
+
+.dialogbox .cont {
+    width: 350px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+.dialogbox h2 {
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+form {
+    display: block;
+    margin-top: 0em;
+}
+
+.dialogbox .box {
+    width: 100%;
+    height: 45px;
+    line-height: 45px;
+    border: 1px solid #ccc;
+    margin: 15px 0;
+    border-radius: 3px;
+    position: relative;
+}
+
+.dialogbox .eye {
+    display: inline-block;
+    position: absolute;
+    height: 16px;
+    width: 16px;
+    top: 36%;
+    left: 320px;
+    cursor: pointer;
+}
+
+.dialogbox .close {
+    position: absolute;
+    right: 10px;
+    top: 15px;
+    cursor: pointer;
+}
+
+.dialogbox .box input {
+    width: 235px;
+    padding: 10px;
+    line-height: 24px;
+    border: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.dialogbox .box span {
+    color: #7c7c7c;
+    border-right: 1px solid #ccc;
+    width: 80px;
+    height: 20px;
+    line-height: 20px;
+    margin-top: 12px;
+    text-align: center;
+    display: block;
+}
+
+.dialogbox .button {
+    width: 100%;
+    height: 45px;
+    line-height: 45px;
+    background: #b6b6b6;
+    color: #fff;
+    margin: 0;
+    border: 0;
+    cursor: pointer;
+    position: relative;
+}
+
+.dialogbox .button input {
+    background: none;
+    border: 0;
+    width: 100%;
+    color: #fff;
+    cursor: pointer;
+    line-height: 45px;
+}
+
+/*去除a标签的默认样式*/
+.Post-item .account a:link {
+    color: #000000;
+    text-decoration: none;
+}
+
+.Post-item .account a:visited {
+    color: #000000;
+    text-decoration: none;
+}
+
+.Post-item .account a:hover {
+    color: #999999;
+    text-decoration: underline;
+}
+
+
+/*右侧边栏的样式*/
+.Profile-sideColumn {
+    width: 296px;
+    color: #646464;
+}
+
+.LikeInfo {
+    margin-top: 20px;
+}
+
+.CollectInfo {
+    margin-top: 50px;
+}
+
+.Info {
+    margin-bottom: 10px;
+    background: #fff;
+    overflow: hidden;
+    border-radius: 2px;
+    -webkit-box-shadow: 0 1px 3px rgba(26, 26, 26, .1);
+    box-shadow: 0 1px 3px rgba(26, 26, 26, .1);
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.NumberBoard {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    height: 80px;
+}
+
+.NumberBoard-item {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1;
+    flex: 1 1;
+}
+
+.NumberBoard-itemInner {
+    text-align: center;
+    line-height: 1.35;
+}
+
+.Button--plain:hover {
+    color: #175199;
+}
+
+.NumberBoard-itemValue {
+    display: inline-block;
+    font-size: 20px;
+    color: #1a1a1a;
+    font-weight: 600;
+    font-synthesis: style;
+}
+
+.NumberBoard-itemName {
+    font-size: 16px;
+}
+
+.SideContent {
+    font-size: 14px;
+    margin-top: 40px;
+}

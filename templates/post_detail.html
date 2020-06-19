@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>帖子界面</title>
+    <meta name="format-detection" content="telephone=no,email=no,address=no">
+    <script src="../static/vue.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="main-left">
+        <p class="nav">
+            <a href="/" target="_blank">论坛首页></a>
+            <a href="/block" target="_blank">{{ block_name }}></a>
+            <span>{{ title }}</span>
+        </p>
+        <div class="content">
+            <h1 class="title">{{ title }}</h1>
+            <p class="tips">
+                同新云&nbsp;&nbsp;{{ post_time }}
+            </p>
+            <div class="post-content">
+                <!-- 测试代码-->
+                <p>
+                    刚一开始学习这个特性的时候，总是出一些当时看起来很奇怪的问题。现在决定重新整理一下。毕竟使用css，十行揉在一起凑出效果是一种使用，知道为什么会有这种效果也是一种使用。我们需要做一些测试，所以首先需要了解一下到底哪些DOM元素适合。</p>
+
+                <p>那我们第一个问题就来了。</p>
+
+                <h4>line-height可以应用于哪些元素</h4>
+
+                <pre><code class='language-javascript'>* line-height只影响行内元素，并不能直接应用于块级元素。<br/>* line-height 具有可继承性，块级元素的子元素会继承该特性，并且在行内元素上生效。
+            </code></pre>
+
+                <p>所以，我们在这里可以只考虑行内元素，包括行内替换元素和行内非替换元素，img和span可以分别作为它们典型的代表。</p>
+
+                <h4>什么是line-height</h4>
+
+                <p>对于这个问题一直感觉很困惑。定义上说，line-height就是两个文本行基线之间的距离，难道就是像下图这样子:
+                    <img src="../static/icon/皮卡丘.jpg"
+                         alt="enter image description here" title/></p>
+
+                <p style="display: none">但是问题来了，如果我分别给两个元素设置了line-height, 那么哪个line-height是这两个文本行之间的距离？
+                    我写了如下的测试代码：</p>
+
+                <!-- 测试内容-->
+            </div>
+            <div class="menubar">
+                <span class="reply"><i style="{'background-image': url(getReplyIcon())}"></i>回复</span>
+                <span class="like" @click="like_post" :style="{color:LikeIcon.color}"><i
+                        :style="{backgroundImage:`url(${LikeIcon.con})`}"></i>喜爱</span>
+                <span class="collect" @click="collect_post" :style="{color:CollectIcon.color}"><i
+                        :style="{backgroundImage: `url(${CollectIcon.con})`}"></i>收藏</span>
+                <span class="dislike"@click="dislike_post" :style="{color:DislikeIcon.color}"><i
+                        :style="{backgroundImage: `url(${DislikeIcon.con})`}"></i>不喜欢</span>
+            </div>
+            <div class="comment_list">
+                <p class="comment-list-title">
+                    <img src="../static/post-pic/comment-pre-icon.png">
+                    热门评论
+                </p>
+                <div class="comment-item">
+                    <div class="comment-info">
+                        <div class="user-pic">
+                            <img :src="user_img" alt>
+                        </div>
+                        <div class="user-info">
+                            <div class="comment-user-info">
+                                {{ user_name }}
+                            </div>
+                            <div class="comment-time">
+                                发布于&nbsp;&nbsp;{{ comment_time }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comment-con"><p>{{ comment_con }}</p></div>
+                    <div class="comment-footer">
+                        <div class="reply"><i></i>回复</div>
+                        <div class="like"><i></i>喜爱</div>
+                        <div class="collect"><i></i>收藏</div>
+                        <div class="dislike"><i></i>不喜欢</div>
+                        <span class="floor-num">{{ floor_num }}楼</span>
+                    </div>
+                    <div class="comment-reply">
+                        <div v-if="reply_num>0">
+                            <p>查看回复({{ reply_num }})</p>
+                            <div class="reply-items">
+                                <div class="reply-item" v-for="item in reply_items">
+                                    <div class="reply-user-pic">
+                                        <img :src="item.user_img" alt>
+                                    </div>
+                                    <div class="reply-user-info">
+                                        <div class="reply-user-name">
+                                            {{ item.user_name }}
+                                        </div>
+                                        <div class="reply-time">
+                                            发布于&nbsp;&nbsp;{{ item.reply_time }}
+                                        </div>
+                                    </div>
+                                    <div class="reply-con"><p>{{ item.reply_con }}</p></div>
+                                    <div class="reply-footer">
+                                        <div class="like"><i></i>喜爱</div>
+                                        <div class="collect"><i></i>收藏</div>
+                                        <div class="dislike"><i></i>不喜欢</div>
+                                        <span class="floor-num">{{ floor_num }}层</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-right">2</div>
+</div>
+
+<style scoped>
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol
+    }
+
+    .container {
+        display: block;
+        width: 1100px;
+        margin: 0 auto;
+    }
+
+    .main-left {
+        float: left;
+        width: 668px;
+        padding-right: 55px;
+    }
+
+    .main-right {
+        width: 280px;
+        float: left;
+    }
+
+    .nav a {
+        text-decoration: none;
+        color: #000000;
+    }
+
+    .nav span {
+        width: 456px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .nav {
+        margin-bottom: 15px;
+    }
+
+    .tips {
+        text-decoration: none;
+        border-bottom: 1px solid #0d3349;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+    }
+
+    .content {
+        border: 1px solid #ebebeb;
+        padding: 24px;
+    }
+
+    .menubar {
+        margin-top: 24px;
+    }
+
+    .menubar span {
+        width: 112px;
+        height: 32px;
+        line-height: 32px;
+        display: inline-block;
+        margin-right: 24px;
+        text-align: center;
+        cursor: pointer;
+        font-size: 13px;
+    }
+
+    .menubar .reply {
+        border: 1px solid #ebebeb;
+        border-radius: 16px;
+    }
+
+    .menubar i {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        background-size: 100% 100%;
+        vertical-align: -4px;
+        margin-right: 5px;
+    }
+
+    .menubar .reply i {
+        background-image: url(../static/icon/reply.svg);
+    }
+
+
+    .menubar .collect i {
+        background-image: url(../static/icon/collect.svg);
+    }
+
+    .menubar .dislike i {
+        background-image: url(../static/icon/dislike.svg);
+    }
+
+    .menubar .reply {
+        color: #7c5dc7;
+    }
+
+    .menubar .reply:hover {
+        background-color: #7c5dc7;
+        color: #FFFFFF;
+
+    }
+
+    .menubar .reply:hover i {
+        background-image: url("../static/icon2/reply.svg");
+    }
+
+    .menubar span:not(.reply):hover {
+        color: #7c5dc7;
+    }
+
+
+    .menubar .collect:hover i {
+        background-image: url(../static/icon2/collect.svg);
+    }
+
+    .menubar .dislike:hover i {
+        background-image: url(../static/icon2/dislike.svg);
+    }
+
+    .comment_list {
+        margin-top: 60px;
+    }
+
+    .comment-list-title {
+        padding-bottom: 20px;
+        border-bottom: 1px solid #ebebeb;
+    }
+
+    .comment-list-title image {
+        top: 5px;
+        position: relative;
+    }
+
+    .comment-item {
+        display: block;
+    }
+
+    .comment-item .comment-info {
+        display: block;
+    }
+
+    .comment-item .user-pic {
+        display: inline-block;
+        height: 44px;
+        width: 44px;
+        vertical-align: top;
+    }
+
+    .user-pic img {
+        height: 100%;
+        width: 100%;
+        border-radius: 50% 50%;
+    }
+
+    .user-info {
+        margin-left: 12px;
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    .comment-user-info {
+        font-weight: 600;
+        color: #333;
+        font-size: 14px;
+    }
+
+    .comment-time {
+        margin-top: 8px;
+        font-size: 13px;
+        color: #999;
+    }
+
+    .comment-con {
+        padding-left: 58px;
+        line-height: 26px;
+        font-size: 16px;
+        margin-bottom: 16px;
+    }
+
+    .comment-footer {
+        padding-left: 58px;
+        display: block;
+        overflow: hidden;
+    }
+
+    .comment-footer i {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        background-size: 100% 100%;
+        vertical-align: -4px;
+        margin-right: 5px;
+    }
+
+    .comment-footer div {
+        margin-right: 24px;
+        font-size: 14px;
+        line-height: 18px;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+    .comment-footer span {
+        float: right;
+        color: #999;
+        margin-top: 10px;
+    }
+
+    .comment-footer div:hover {
+        color: #7c5dc7;
+    }
+
+    .comment-footer .reply i {
+        background-image: url(../static/icon/reply2.svg);
+    }
+
+    .comment-footer .like i {
+        background-image: url(../static/icon/like.svg);
+    }
+
+    .comment-footer .collect i {
+        background-image: url(../static/icon/collect.svg);
+    }
+
+    .comment-footer .dislike i {
+        background-image: url(../static/icon/dislike.svg);
+    }
+
+    .comment-footer .reply:hover i {
+        background-image: url(../static/icon2/reply2.svg);
+    }
+
+    .comment-footer .like:hover i {
+        background-image: url(../static/icon2/like.svg);
+    }
+
+    .comment-footer .collect:hover i {
+        background-image: url(../static/icon2/collect.svg);
+    }
+
+    .comment-footer .dislike:hover i {
+        background-image: url(../static/icon2/dislike.svg);
+    }
+
+    <!--
+    {#  replyitem格式设置  #}
+    -->
+    .reply-items {
+        margin-left: 58px;
+        padding: 20px 18px;
+        display: block;
+        background-color: #ebebeb;
+    }
+
+    .reply-item {
+        display: block;
+    }
+
+    .reply-item .reply-user-pic {
+        display: inline-block;
+        border-radius: 50%;
+        height: 40px;
+        width: 40px;
+        vertical-align: top;
+    }
+
+    .reply-user-pic img {
+        border-radius: 50% 50%;
+        height: 100%;
+        width: 100%;
+    }
+
+    .reply-user-info {
+        margin-left: 12px;
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    .reply-user-name {
+        color: #000;
+        font-size: 12px;
+    }
+
+    .reply-time {
+        margin-top: 8px;
+        font-size: 12px;
+        color: #999;
+    }
+
+    .reply-con {
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+
+    .reply-footer {
+        display: block;
+        overflow: hidden;
+    }
+
+    .reply-footer i {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        background-size: 100% 100%;
+        vertical-align: -4px;
+        margin-right: 5px;
+    }
+
+    .reply-footer div {
+        margin-right: 24px;
+        font-size: 14px;
+        line-height: 18px;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+    .reply-footer span {
+        float: right;
+        color: #999;
+        margin-top: 10px;
+    }
+
+    .reply-footer div:hover {
+        color: #7c5dc7;
+    }
+
+    .reply-footer .reply i {
+        background-image: url(../static/icon/reply2.svg);
+    }
+
+    .reply-footer .like i {
+        background-image: url(../static/icon/like.svg);
+    }
+
+    .reply-footer .collect i {
+        background-image: url(../static/icon/collect.svg);
+    }
+
+    .reply-footer .dislike i {
+        background-image: url(../static/icon/dislike.svg);
+    }
+
+    .reply-footer .reply:hover i {
+        background-image: url(../static/icon2/reply2.svg);
+    }
+
+    .reply-footer .like:hover i {
+        background-image: url(../static/icon2/like.svg);
+    }
+
+    .reply-footer .collect:hover i {
+        background-image: url(../static/icon2/collect.svg);
+    }
+
+    .reply-footer .dislike:hover i {
+        background-image: url(../static/icon2/dislike.svg);
+    }
+</style>
+<script>
+    var post_time = '2020 5 19 18:01';
+    var title = '帖子题目';
+    new Vue({
+        el: '.nav',
+        data: {
+            block_name: '板块题目',
+            title: title
+        }
+    })
+    new Vue({
+        el: '.title',
+        data: {
+            title: title
+        }
+    })
+    new Vue({
+        el: '.tips',
+        data: {
+            post_time: post_time
+        }
+    })
+    new Vue({
+        el: '.reply',
+        methods: {
+            reply_post() {
+                window.alert('reply post');
+            }
+        }
+    })
+    <!--指明用户是否喜欢post-->
+    var like_post = 0;
+    var collect_post = 0;
+    var dislike_post = 0;
+
+    function Icon(para,name) {
+        <!--para为0或1-->
+        this.like = para
+        <!--name存放图片的名称-->
+        this.name=name
+        Icon.prototype.set=function(para){
+            this.like=para
+        }
+        Icon.prototype.getIcon = function () {
+            console.log('a' + this.like)
+            if (this.like === 0)
+                return '../static/icon/'+this.name
+            else
+                return '../static/icon2/'+this.name
+        }
+        Icon.prototype.getColor=function () {
+            if (this.like===0)
+                return ''
+            else
+                return '#7c5dc7'
+        }
+    }
+
+    new Vue({
+        el: '.menubar',
+        data() {
+            like1=new Icon(like_post, 'like.svg')
+            collect1=new Icon(collect_post,'collect.svg')
+            dislike1=new Icon(dislike_post,'dislike.svg')
+            return {
+                LikeIcon: {
+                con: like1.getIcon(),
+                color: like1.getColor()
+                },
+                CollectIcon:{
+                    con:collect1.getIcon(),
+                    color:collect1.getColor()
+                },
+                DislikeIcon:{
+                    con:dislike1.getIcon(),
+                    color:dislike1.getColor()
+                }
+            }
+        },
+        methods: {
+            display() {
+                return 0
+            },
+            like_post() {
+                like_post = 1 - like_post
+                like1.set(like_post)
+                this.$set(this.LikeIcon, "con", like1.getIcon())
+                this.$set(this.LikeIcon,"color",like1.getColor())
+            },
+            collect_post(){
+                collect_post=1-collect_post
+                collect1.set(collect_post)
+                this.$set(this.CollectIcon,"con",collect1.getIcon())
+                this.$set(this.CollectIcon,"color",collect1.getColor())
+            },
+            dislike_post(){
+                dislike_post=1-dislike_post
+                dislike1.set(dislike_post)
+                this.$set(this.DislikeIcon,"con",dislike1.getIcon())
+                this.$set(this.DislikeIcon,"color",dislike1.getColor())
+            }
+        }
+    })
+    new Vue({
+        el: '.comment-item',
+        data: {
+            floor_num: 1,
+            user_img: '../media/皮卡丘.jpg',
+            user_name: '高康瑞',
+            comment_time: '2020/5/20 14:42',
+            comment_con: '今年研究生扩招一倍多，以后得研究生可能真的不如二十年前的本科生，所以你得想开点，以后新来的研究生待遇不如你这个本科生',
+            reply_num: 1,
+            reply_items: [
+                {
+                    floor_num: 1,
+                    user_img: '../media/皮卡丘.jpg',
+                    user_name: '皮卡丘',
+                    reply_time: '2020/5/22 10:56',
+                    reply_con: '转播费应该也是很重要的收入吧\n'
+                }
+            ],
+            object: [{
+                title: 'How to do lists in Vue',
+                author: 'Jane Doe',
+                publishedAt: '2016-04-10'
+            }]
+        },
+        methods: {
+            reply_post(post_id, reply_id) {
+                if (post_id !== 0) {
+                    axios.post('/')
+                }
+            }
+        }
+    })
+</script>
+</body>
+</html>

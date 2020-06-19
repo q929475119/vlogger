@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <meta charset="utf-8">
+    <title>发布帖子1</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<form action="/create_post/" method="post" class="smart-green" enctype="multipart/form-data" role="form">
+    
+
+    <label>
+        <textarea id="title"  name="title" >【】</textarea>
+        <div class="error-msg"></div>
+    </label>
+    <div class="success-msg"></div>
+    <label>
+        <select name="block">
+            <option value="1" selected="selected">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+        <div class="error-msg"></div>
+    </label>
+    <label>
+		<a id="click_topic">话题</a>
+	</label>
+    <label>
+        <input type="file" name="file" class="file" id="file_uploader" onclick="Fileuploader()"/>
+    </label>
+    <label>
+        <span>&nbsp; </span>
+        <input type="submit" class="button" value="发布"/>
+    </label>
+    {% csrf_token %}
+</form>
+<div id='topic' class="topic_c" style="display: none;">
+    <label>
+        <textarea id="topic_name" name="topic_name"class="find_topic"  ></textarea>
+    </label>
+    <a class="new_topic" id="endtopic" >新话题</a>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    $(document).ready(function(){
+		$("#click_topic").click(function(){
+		    $("#topic").css("display","block");
+		});
+		$("#endtopic").click(function(){
+		    var topic_str = "#"+$("#topic_name").val()+"#";
+		    var str = topic_str+$("#title").val()
+			$("#title").val(str);
+		    alert($("#title").val());
+			$("#topic").css("display","none");
+		});
+	});
+</script>

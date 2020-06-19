@@ -1,0 +1,259 @@
+{#该文件作为个人中心页面父模板，其内容供其他文件继承#}
+<!DOCTYPE html>
+<html>
+{#加载静态文件#}
+{% load static %}
+<head>
+    <meta charset="utf-8">
+    <title>同新云 - {{ user.nickname }}的个人中心</title>
+    {#引入外部css文件#}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/profileStyle.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/profile_small_post.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/profile_nav.css' %}">
+    {#如果有波浪线，需要将cdn的css下载的本地，以加速显示#}
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+
+    {#引入jquery库，便于编写js；还引入了别人写的用于图片预览插件#}
+    <script src="{% static 'js/jquery-3.5.1.js' %}"></script>
+    {#参考了https://www.cnblogs.com/flywang/p/5116770.html#}
+    <script src="{% static 'js/uploadPreview.js' %}"></script>
+    {#当前页面操作的js代码#}
+    <script src="{% static 'js/profile.js' %}"></script>
+</head>
+
+<body>
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        {#        <!-- Brand and toggle get grouped for better mobile display -->#}
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#my-nav"
+                    aria-expanded="false">
+                <span class="sr-only">切换导航条</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">同新云</a>
+        </div>
+
+        {#        <!-- Collect the nav links, forms, and other content for toggling -->#}
+        <div class="collapse navbar-collapse" id="my-nav">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/index/">主页</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if request.session.is_login %}
+                    <li class="user-pic">
+                        <a class="user-pic" href={% url 'center' loginuser=request.session.user_account %}>
+                            <img src="{{ request.session.ProfilePicture }}" alt> </a>
+                    </li>
+                    <li id="GetLoginuser" data-loginuser="{{ request.session.user_account }}">
+                        <a href="{% url 'center' loginuser=request.session.user_account %}">当前在线：{{ request.session.user_account }}</a>
+                    </li>
+                    <li><a href="/logout/">登出</a></li>
+                {% else %}
+                    <li><a href="/login/">登录</a></li>
+                    <li><a href="/register/">注册</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        {#          <!-- /.navbar-collapse -->#}
+    </div>
+    {#        <!-- /.container-fluid -->#}
+</nav>
+
+
+<div class="ProfileHeader">
+    <!-- 背景图片 -->
+    <div class="Cover">
+        <img class="CoverImage" src="{% static 'image/background.png' %}" alt="背景封面">
+    </div>
+
+    <div class="ProfileHeader-main">
+        <div class="ProfileHeader-avatar">
+
+            <div class="Avatar">
+                <!-- 头像部分 -->
+                <!-- iframe为空，并配置form的target属性，使得提交头像图片的跳转链接是当前页面 -->
+                <iframe name="FrameFile" style="display: none;"></iframe>
+                <!-- 头像上传表单 -->
+                <div class="AvatarMask">
+                    {% if is_same_user %}
+                        <form id="AvatarForm" enctype="multipart/form-data"
+                              action="{% url 'upload_avatar' loginuser=user.account %}"
+                              method="post" autocomplete="off" target="FrameFile">
+                            <!-- label与input的id关联，使点击图片也能响应上传文件功能 -->
+                            <label class="ChangeArea" for="AvatarUpload">
+                                <div class="AvatarArea">
+                                    <img width="120" height="120" style="cursor: pointer;" id="AvatarShow"
+                                         src="{{ user.ProfilePicture }}">
+                                </div>
+                                <div class="AvatarBox">
+                                    <button class="Button" type="button" id="AvatarButton">修改头像</button>
+                                    <!-- 注意input的name属性要与后台数据表字段保持一致 -->
+                                    <input type="file" name="ProfilePicture" id="AvatarUpload" style="display: none;"/>
+                                </div>
+                            </label>
+                            {% csrf_token %}
+                        </form>
+                    {% else %}
+                        <div class="AvatarArea">
+                            <img width="120" height="120" id="AvatarShow"
+                                 src="{{ user.ProfilePicture }}">
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+
+        <div class="ProfileHeader-content">
+            <!-- 填充个人内容-->
+            <div class="ProfileHeader-contentHeader">
+                <h1 class="ProfileHeader-title">
+                    <!-- 填写昵称 -->
+                    <span class="ProfileHeader-name">{{ user.nickname }}</span>
+                </h1>
+            </div>
+            <div class="ProfileHeader-contentBody">
+                <!-- 填写邮箱 -->
+                <span class="ProfileHeader-email">{{ user.email }}</span>
+            </div>
+            {#只有已经登录的当前用户才能点击修改密码#}
+            {% if is_same_user %}
+                <div class="ProfileHeader-button">
+                    <button class="popBox Button">修改密码</button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+<div class="ProfileMain">
+
+    <div class="Profile-mainColumn">
+        {% block MainHeader %}
+            <!-- 内容的导航栏 -->
+            <div class="ProfileMain-header">
+                <ul role="tablist" class="Tabs ProfileMain-tabs">
+                    {#通过视图中传来的参数，来显示选中的激活状态#}
+                    <li role="tab" class="Tabs-item"><a
+                            class="Tabs-link {% if is_active_post %}is-active{% endif %}"
+                            href="{% url 'post' loginuser=user.account %}">帖子<span
+                            class="Tabs-meta">{{ posts_counts }}</span></a></li>
+                    <li role="tab" class="Tabs-item"><a
+                            class="Tabs-link {% if is_active_comment %}is-active{% endif %}"
+                            href="{% url 'comment' loginuser=user.account %}">评论<span
+                            class="Tabs-meta">{{ comments_counts }}</span></a></li>
+                    <li role="tab" class="Tabs-item"><a
+                            class="Tabs-link {% if is_active_reply %}is-active{% endif %}"
+                            href="{% url 'reply' loginuser=user.account %}">回复<span
+                            class="Tabs-meta">{{ replies_counts }}</span></a></li>
+                </ul>
+            </div>
+        {% endblock %}
+
+        {% block MainContent %}
+
+        {% endblock %}
+    </div>
+
+    <!-- 右侧边栏 -->
+    <div class="Profile-sideColumn">
+        <div class="LikeInfo Info">
+            <div class="NumberBoard">
+            {# 只有登录的当前用户才可以跳转到主页，未登录以及访问其他人主页都不能实现跳转 #}
+                {% if is_same_user %}
+                    <a type="button" class="Button NumberBoard-item Button--plain" href="/index/">
+                        <div class="NumberBoard-itemInner">
+                            <div class="NumberBoard-itemName">赞同了帖子数</div>
+                            <br><strong class="NumberBoard-itemValue">{{ posts_like_counts }}</strong></div>
+                    </a>
+                    <a type="button" class="Button NumberBoard-item Button--plain" href="/index/">
+                        <div class="NumberBoard-itemInner">
+                            <div class="NumberBoard-itemName">收藏了帖子数</div>
+                            <br><strong class="NumberBoard-itemValue">{{ posts_collect_counts }}</strong></div>
+                    </a>
+                {% else %}
+                    <div class="NumberBoard-itemInner Button NumberBoard-item Button--plain" style="cursor: default">
+                        <div class="NumberBoard-itemName">赞同了帖子数</div>
+                        <br><strong class="NumberBoard-itemValue">{{ posts_like_counts }}</strong></div>
+                    <div class="NumberBoard-itemInner Button NumberBoard-item Button--plain" style="cursor: default">
+                        <div class="NumberBoard-itemName">收藏了帖子数</div>
+                        <br><strong class="NumberBoard-itemValue">{{ posts_collect_counts }}</strong></div>
+                {% endif %}
+            </div>
+
+        </div>
+        <div class="CollectInfo Info">
+            <div class="NumberBoard">
+                <a type="button" class="Button NumberBoard-item Button--plain"
+                   href="{% url 'posts_votes' loginuser=user.account %}">
+                    <div class="NumberBoard-itemInner">
+                        <div class="NumberBoard-itemName">帖子获赞数</div>
+                        <br><strong class="NumberBoard-itemValue">{{ posts_liked_counts }}</strong></div>
+                </a>
+                <a type="button" class="Button NumberBoard-item Button--plain"
+                   href="{% url 'posts_votes_collect' loginuser=user.account %}">
+                    <div class="NumberBoard-itemInner">
+                        <div class="NumberBoard-itemName">帖子获收藏数</div>
+                        <br><strong class="NumberBoard-itemValue">{{ posts_collected_counts }}</strong></div>
+                </a>
+            </div>
+        </div>
+        <div class="SideContent">
+            <strong>同新云介绍：</strong>
+            <br>
+            <p>本系统为一论坛：适用于校园范围内的学习交流休闲娱乐以及生活便利。</p>
+        </div>
+    </div>
+
+</div>
+
+<div id="CornerButtons">
+    <img src="{% static 'image/回到顶部.jpg' %}" style="width: 50px;height: 50px">
+</div>
+
+{# 背景层和弹出框，通过监听点击事件，将将隐藏的块显示出来 #}
+<div class="dialog">
+    <div class="dialogbox">
+        <h2>修改密码</h2>
+        <div class="close"><img src="{% static 'image/dig_close.png' %}"></div>
+        <div class="cont">
+            {#采用ajax提交，避免密码输入框的自动填充#}
+            <form class="ChangePwdForm" autocomplete="off">
+                <div class="box">
+                    <span>原密码</span>
+                    <input type="password" id="password0" name="password0" class="Pwd" placeholder="6-20位非中文字符"
+                           autocomplete="new-password">
+                    <i class="fa fa-eye eye" id="eye0"></i>
+                </div>
+
+                <div class="box">
+                    <span>新密码</span>
+                    <input type="password" id="password1" name="password1" class="Pwd" placeholder="6-20位非中文字符"
+                           autocomplete="new-password">
+                    <i class="fa fa-eye eye" id="eye1"></i>
+                </div>
+                <div class="box">
+                    <span>确定密码</span>
+                    <input type="password" id="password2" name="password2" class="Pwd" placeholder="6-20位非中文字符"
+                           autocomplete="new-password">
+                    <i class="fa fa-eye eye" id="eye2"></i>
+                </div>
+                <div class="button">
+                    <input class="ChangePwdBtn" type="button" value="提交">
+                </div>
+                {% csrf_token %}
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="bg" id="dialogBg"></div>
+
+</body>
+
+</html>
