@@ -284,7 +284,7 @@ class ChangePasswordView(View):
             return HttpResponse(json.dumps(data), content_type='application/json')
 
 
-def hash_password(string, salt='tongxin-cloud'):  # 加点盐
+def hash_password(string, salt='vlogger'):  # 加点盐
     # Hash加密，返回64位十六进制数
     h = hashlib.sha256()
     string += salt

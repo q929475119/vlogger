@@ -1,5 +1,5 @@
 """
-WSGI config for tongxin-cloud project.
+WSGI config for vlogger project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tongxin-cloud.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'vlogger.settings')
 
 application = get_wsgi_application()
