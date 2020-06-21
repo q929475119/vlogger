@@ -26,19 +26,21 @@
             margin-bottom: 0;
         }
 
-        .user-pic {
+        .navbar .user-pic {
             display: inline-block;
             height: 50px;
             width: 50px;
             vertical-align: top;
             padding: 0 !important;
         }
-
-        .user-pic img {
-            height: 100%;
-            width: 100%;
+        .navbar .online{
+            padding-left: 0px;
+        }
+        .navbar-right .user-pic img {
+            height: 80%;
+            width: 80%;
             border-radius: 50% 50%;
-            vertical-align: bottom;
+            margin-top: 10%;
         }
 
         .navbar-collapse > ul > li:hover {
@@ -59,7 +61,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">同新云</a>
+            <a class="navbar-brand" href="#">VLOG</a>
         </div>
 
         {#        <!-- Collect the nav links, forms, and other content for toggling -->#}
@@ -71,10 +73,10 @@
                 {% if request.session.is_login %}
                     <li class="user-pic">
                         <a class="user-pic" href={% url 'center' loginuser=request.session.user_account %}>
-                        <img src="{{ request.session.ProfilePicture }}" alt> </a>
+                        <img src="{{ user.ProfilePicture }}" alt> </a>
                     </li>
                     <li>
-                        <a href="{% url 'center' loginuser=request.session.user_account %}">当前在线：{{ request.session.user_account }}</a>
+                        <a class="online" href="{% url 'center' loginuser=request.session.user_account %}">当前在线：{{ request.session.user_account }}</a>
                     </li>
 
                     <li><a href="/logout/">登出</a></li>

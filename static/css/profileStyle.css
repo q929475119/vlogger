@@ -201,8 +201,8 @@ ul {
     list-style-type: disc;
     margin-block-start: 1em;
     margin-block-end: 1em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
     padding-inline-start: 40px;
 }
 
@@ -213,7 +213,6 @@ li {
 }
 
 .ProfileMain-tabs .Tabs-item {
-    -ms-flex-negative: 0;
     flex-shrink: 0;
     padding: 0 12px;
 }
@@ -445,6 +444,36 @@ form {
     text-decoration: underline;
 }
 
+
+/*分页栏的样式*/
+#Pagination {
+    padding: 16px 10px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+#Pagination button[disabled] {
+    cursor: default;
+    opacity: 0.5;
+}
+
+.PaginationButton:hover {
+    color: #175199;
+}
+
+.PagButton {
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    outline: none;
+    font-size: 14px;
+}
+
+.PaginationButton {
+    color: #1a1a1a;
+    padding: 0 10px;
+}
 
 /*右侧边栏的样式*/
 .Profile-sideColumn {

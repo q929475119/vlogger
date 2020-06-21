@@ -1,19 +1,27 @@
 $(function() {
+	var arr=[]
+    var arr_length=0
             $("#click_topic").click(function () {
                 $("#topic").css("display", "block");
             });
             n_topic =0;
             $("#endtopic").click(function () {
                 var topic_str = $("#topic_name").val();
+				result = $.inArray(topic_str,arr);
 				if (topic_str===""){
 					$("#topic_name").attr("placeholder","不能为空");
 				}else if(topic_str.length>10){
 					$("#topic_name").attr("placeholder","话题不能超过12");
-				}
+				}else if(result !== -1){
+				    $("#topic_name").attr("placeholder","请勿添加重复话题");
+                }else if(arr_length === 3){
+				    alert("预备话题不能超过三个，可双击删除")
+                }
 				else{
 					var topic_tab = $("#topic_try").html();
 					var topic_op = "<input type='radio' name='topic_select' id='t"+n_topic+"'><label for='t"+n_topic+"'>"+topic_str+"</label>"
 					n_topic += 1;
+					arr_length = arr.push(topic_str);
 					var topic_label = topic_tab + topic_op;
 					$("#topic_try").html(topic_label);
 					$("#topic").css("display", "none");
@@ -50,12 +58,20 @@ $(function() {
             });
         $("#old_topic").on("click","li",function(){
             var topic_str = $(this).text();
-            var topic_tab = $("#topic_try").html();
-            var topic_op = "<input type='radio' name='topic_select' id='t"+n_topic+"'><label for='t"+n_topic+"'>"+topic_str+"</label>"
-            var n_topic = n_topic+1;
-            var topic_label = topic_tab + topic_op;
-            $("#topic_try").html(topic_label);
-            $("#topic").css("display", "none");
+            result = $.inArray(topic_str,arr);
+            if (result !== -1){
+                $("#topic_name").attr("placeholder","请勿添加重复话题");
+            }else if(arr_length === 3) {
+                alert("预备话题不能超过三个，可双击删除")
+            } else {
+                var topic_tab = $("#topic_try").html();
+                var topic_op = "<input type='radio' name='topic_select' id='t" + n_topic + "'><label for='t" + n_topic + "'>" + topic_str + "</label>"
+                var n_topic = n_topic + 1;
+                arr_length=arr.push(topic_str)
+                var topic_label = topic_tab + topic_op;
+                $("#topic_try").html(topic_label);
+                $("#topic").css("display", "none");
+            }
         })
         $("#old_topic").on("mouseover","li",function(){
             $(this).css({"backgroundColor":"grey","color":"#FFFFFF"});
@@ -71,7 +87,6 @@ $(function() {
             var which_block;
             var parent = $("#block_p").val();
             if (parent === '1'){
-                alert(block_all.block0);
                 which_block = block_all.block0;
             }else if(parent === '2'){
                 which_block = block_all.block1;
@@ -105,15 +120,23 @@ $(function() {
             
         })
         $("#click_topic").mouseover(function () {
-            $(this).css("color","red");
+            $(this).css("color","#CCFFFF");
         })
         $("#click_topic").mouseout(function () {
             $(this).css("color","white");
         })
         $("#file").mouseover(function () {
-            $("#file_a").css("color","blue");
+            $("#file_a").css("color","#FF9900");
         })
         $("#file").mouseout(function () {
             $("#file_a").css("color","white");
+        })
+		$("#topic_try").on("dblclick","label",function () {
+            var topic_str = $(this).text();
+            $(this).remove();
+            arr = $.grep(arr,function (n,i) {
+				return n!=topic_str;
+            })
+			arr_length -= 1;
         })
     });

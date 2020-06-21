@@ -64,9 +64,10 @@ class Comment(models.Model):
     post = models.ForeignKey('Post', on_delete=models.CASCADE)
     owner = models.ForeignKey("User", on_delete=models.CASCADE)
     discussion = models.CharField(max_length=1000, verbose_name='帖子内容')
+    img = models.FilePathField(max_length=80, verbose_name='图片', null=True)
     time = models.DateField(verbose_name='帖子发出时间',auto_now_add=True)
     floor_number = models.IntegerField(verbose_name='楼层号')
-    img=models.FilePathField(max_length=80,verbose_name='图片',default='')
+
 
     def __str__(self):
         return '帖子id' + str(self.post.id) + '  ' + '第几层评论' + str(self.floor_number)
@@ -77,8 +78,8 @@ class Reply(models.Model):
     post = models.ForeignKey('Post', on_delete=models.CASCADE,default='')
     owner = models.ForeignKey("User", on_delete=models.CASCADE,default='')
     discussion = models.CharField(max_length=1000, verbose_name='回复内容',default='')
-    img=models.FilePathField(max_length=80,verbose_name='图片',default='')
-    time = models.DateField(verbose_name='回复发出时间',default='')
+    img=models.FilePathField(max_length=80,verbose_name='图片',null=True)
+    time = models.DateField(verbose_name='回复发出时间',auto_now_add=True)
     floor_number = models.IntegerField(verbose_name='楼层号',default=-1)
     comment = models.ForeignKey('Comment', verbose_name='被回复的comment', on_delete=models.CASCADE)
 

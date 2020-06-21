@@ -30,7 +30,7 @@
             </div>
 
 
-            {% if not comments %}
+            {% if not comments_counts %}
                 <div class="no_show">
                     <div>还没有评论</div>
                 </div>
@@ -38,9 +38,9 @@
 
             <div>
                 {#一个奇怪的问题，div加上tabindex="0"，在chrome点击这个div区域会出现蓝色边框#}
-                {% for comment in comments %}
+                {% for comment in page %}
                     <div class="Post-item">
-                        <div class="small_post">
+                        <div class="small_post" {% if comment.img %}style="height: 410px"{% endif %}>
                             <div class="user-info">
                                 <div class="profilepicture">
                                     <a href="/usercenter/{{ comment.post.initiator.account }}">
@@ -60,7 +60,7 @@
                                 </div>
 
                             </div>
-                            <div class="text">
+                            <div class="text" {% if comment.img %}style="height: 275px"{% endif %}>
                                 <div class="title">
                                     <a href="/post_detail/{{ comment.post.id }}"
                                        style="text-decoration:none;color:black;">
@@ -70,9 +70,19 @@
                                 <div class="content">
                                     <a href="/post_detail/{{ comment.post.id }}"
                                        style="text-decoration:none;color:black;">
-                                        {{ comment.discussion|truncatewords:60 }}
+                                        {% if comment.discussion|length > 60 %}
+                                            {{ comment.discussion|slice:60 }}...
+                                        {% else %}
+                                            {{ comment.discussion }}
+                                        {% endif %}
                                     </a>
                                 </div>
+                                {% if comment.img %}
+                                    <div class="picture" id="s_post{{ comment.post.id }}"
+                                         data-src="{{ comment.img }}">
+                                        <img width="200" id="picture" height="200" src="{{ comment.img }}" alt>
+                                    </div>
+                                {% endif %}
                             </div>
                             {#如果会话中没有登录账户，那么不能点击这三个按钮；否则除了前端样式改变，还需要从数据库中获取样式，#}
                             {#这里通过所有外键是帖子的集合判断是否有点赞、反对、收藏#}
@@ -100,7 +110,7 @@
                                     </li>
                                 </div>
                             {% else %}
-                               <div class="handle">
+                                <div class="handle">
                                     <li class="like" style="color: #808080;cursor: default"><span><i
                                             class="fa fa-thumbs-o-up" style="margin-right:3px"></i>点赞</span></li>
                                     <li class="dislike" style="color:#808080;cursor: default"><span><i

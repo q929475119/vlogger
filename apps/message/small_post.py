@@ -93,7 +93,7 @@ def small_post(request, id, loginuser=""):
             collectcolor = "#eb7350"
             collect_icon = "fa fa-star"
 
-    context = {'profilepicture': account.ProfilePicture, 'post': post, 'content': content.discussion,
+    context = {'profilepicture': account.ProfilePicture, 'post': post, 'content': content.discussion,'picture':content.img,
                'likecolor': likecolor, 'like_icon':like_icon, 'dislikecolor': dislikecolor, 'dislike_icon':dislike_icon,
                'collectcolor': collectcolor, 'collect_icon':collect_icon, 'loginuser':loginuser}
     return render(request, 'small_post.html', context)

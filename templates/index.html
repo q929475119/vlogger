@@ -14,27 +14,27 @@
                     <div class="mycollect">我的收藏</div>
                 </div>
                 <div class="blocks">
-                    <div class="block0 block" data-block0="{{ block0 }}">学术研究</div>
-                    <div class="block1 block" data-block1="{{ block1 }}">资料分享</div>
-                    <div class="block2 block" data-block2="{{ block2 }}">校内资讯</div>
-                    <div class="block3 block" data-block3="{{ block3 }}">生活娱乐</div>
+                    <div class="block0 block" data-block0="{{ block0 }}">学术研究<i class="fa fa-angle-right" style="float:right;font-size:22px;margin-top:5px;margin-right:20px"></i></div>
+                    <div class="block1 block" data-block1="{{ block1 }}">资料分享<i class="fa fa-angle-right" style="float:right;font-size:22px;margin-top:5px;margin-right:20px"></i></div>
+                    <div class="block2 block" data-block2="{{ block2 }}">校内资讯<i class="fa fa-angle-right" style="float:right;font-size:22px;margin-top:5px;margin-right:20px"></i></div>
+                    <div class="block3 block" data-block3="{{ block3 }}">生活娱乐<i class="fa fa-angle-right" style="float:right;font-size:22px;margin-top:5px;margin-right:20px"></i></div>
+                    <div class="child_block" id="child_block" style="display:none">
+                    </div>
                 </div>
-            </div>
-            <div class="child_block" id="child_block">
             </div>
             <script type="text/javascript" src="/static/js/left_nav.js"></script>
             {#这一div用来放置中间的创建帖子组件和搜索帖子组件和帖子缩略图#}
             <div class="middle">
                 {#发布帖子组件#}
                 <div class="publisher" data-user="{{ request.session.user_account }}">
-                    <form action="/index/" method="post" class="smart-green" enctype="multipart/form-data" role="form">
+                    <form action="/createpost/" method="post" class="smart-green" id="post_form" enctype="multipart/form-data" role="form">
                         <label>
 							<input type="text" id="title" name="title" maxlength="30" placeholder="请输入标题,限30字" />
 						</label>
 						<input type="text" id="login_user" name="login_user" style="display:none" value={{ request.session.user_account }}>
 						<label>
 						<div class="topic_try" id="topic_try" name="topic_try">
-							<label>#此处选择话题#</label>
+							<b>#此处选择话题#</b>
 						</div>
 						</label>
 						<label>
@@ -57,11 +57,11 @@
                             <div class="error-msg"></div>
                         </label>
                         <label class="hot">
-							<a id="click_topic" class="iconfont icon-canyuhuati"><b></b>话题</a>
+							<a id="click_topic" style="cursor:pointer" class="iconfont icon-canyuhuati"><b></b>话题</a>
 						</label>
 						<label class="hot">
-							<a id="file_a" href="###"class="iconfont icon-wenjian"><b></b>文件</a>
-							<input type="file" name="file" class="fi"style="width:100px;opacity: 0;position: absolute;z-index: 10;margin:0 0 0 -80px" id="file"/>
+							<a id="file_a" href="###" style="cursor:pointer" class="iconfont icon-wenjian"><b></b>文件</a>
+							<input type="file" name="file" class="fi"style="width:80px;opacity:0;cursor:pointer;position:absolute;z-index:10;margin:0 0 0 220px" id="file"/>
 						</label>
                         <label>
                             <span>&nbsp; </span>
@@ -74,9 +74,7 @@
 							<div class="head_p">搜索或新建添加话题</div>
 							<div id="no_topic" class="n_topic">X</div>
 						</div>
-						<label>
                             <textarea id="topic_name" name="topic_name" maxlength="10" onKeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" placeholder="话题限10字" class="find_topic"></textarea>
-                        </label>
                         <a class="new_topic" id="endtopic">新话题</a>
                         <br><br>
                         <div id="old_topic">
@@ -85,9 +83,9 @@
                 </div>
                 {#搜索帖子组件#}
                 <div class="search" data-login="{{ request.session.user_account }}" data-user="{{ request.session.user_account }}">
-                    <form method="POST" action="/index/">
+                    <form method="post" action="/index/">
                         {% csrf_token %}
-                        <input type="text" autocomplete="off" name="content" id="search_txt" placeholder="搜索话题，帖子">
+                        <input type="text" autocomplete="off" name="content" id="search_txt" placeholder="搜索你感兴趣的话题，帖子">
                         <button type="submit" id="search_btn"></button>
                     </form>
                 </div>
@@ -124,7 +122,7 @@
             padding-top: 4px;
             color: #999;
             padding-left: 20px;
-            font-size: 8px;
+            font-size: 12px;
             line-height: 18px;
         }
         .right_rank{
@@ -145,6 +143,7 @@
         .right_nav{
             background-color:#ffffff;
             border-radius:10px;
+            font-size: 16px;
         }
         .right_nav h1 {
             font-weight: bold;

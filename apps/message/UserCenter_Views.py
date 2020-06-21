@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.base import View  # 基于类实现需要继承的view
 from django.http import HttpResponse
 from django.db.models import Q
+from django.core.paginator import Paginator, PageNotAnInteger, InvalidPage, EmptyPage  # 引入django自带的分页功能
 
 from apps.message import models
 from apps.message import forms
@@ -29,14 +30,23 @@ class UserCenterPostView(View):
         first_comments = models.Comment.objects.filter(floor_number=0, owner=user).order_by("-time")
         posts_counts = first_comments.count()
 
+        # 分页
+        paginator = Paginator(first_comments, 6)
+        page_num = request.GET.get('page', '1')
+        try:
+            page = paginator.page(page_num)
+        except(PageNotAnInteger, EmptyPage, InvalidPage):  # 不合法的分页到第一页
+            page = paginator.page('1')
+
         posts_like_counts, posts_collect_counts, posts_liked_counts, posts_collected_counts = counts(user)
 
         is_active_post = True
         return render(request, "UserCenter-post.html", {
-            "user": user, "is_same_user": is_same_user, "first_comments": first_comments,
+            "user": user, "is_same_user": is_same_user,
             "posts_counts": posts_counts, "posts_like_counts": posts_like_counts,
             "posts_collect_counts": posts_collect_counts, "posts_liked_counts": posts_liked_counts,
-            "posts_collected_counts": posts_collected_counts, "is_active_post": is_active_post
+            "posts_collected_counts": posts_collected_counts, "is_active_post": is_active_post,
+            "page_num": page_num, "page": page
         })
 
 
@@ -70,13 +80,22 @@ def posts_by_votes(request, loginuser):
         first_comment = models.Comment.objects.get(post__id=post_id, floor_number=0)
         first_comments.append(first_comment)
 
+    # 分页
+    paginator = Paginator(first_comments, 6)
+    page_num = request.GET.get('page', '1')
+    try:
+        page = paginator.page(page_num)
+    except(PageNotAnInteger, EmptyPage, InvalidPage):  # 不合法的分页到第一页
+        page = paginator.page('1')
+
     is_active_post = True
 
     return render(request, "UserCenter-post.html", {
-        "user": user, "is_same_user": is_same_user, "first_comments": first_comments,
+        "user": user, "is_same_user": is_same_user,
         "posts_counts": posts_counts, "posts_like_counts": posts_like_counts,
         "posts_collect_counts": posts_collect_counts, "posts_liked_counts": posts_liked_counts,
-        "posts_collected_counts": posts_collected_counts, "is_active_post": is_active_post
+        "posts_collected_counts": posts_collected_counts, "is_active_post": is_active_post,
+        "page_num": page_num, "page": page
     })
 
 
@@ -112,11 +131,20 @@ def posts_by_votes_collect(request, loginuser):
 
     is_active_post = True
 
+    # 分页
+    paginator = Paginator(first_comments, 6)
+    page_num = request.GET.get('page', '1')
+    try:
+        page = paginator.page(page_num)
+    except(PageNotAnInteger, EmptyPage, InvalidPage):  # 不合法的分页到第一页
+        page = paginator.page('1')
+
     return render(request, "UserCenter-post.html", {
-        "user": user, "is_same_user": is_same_user, "first_comments": first_comments,
+        "user": user, "is_same_user": is_same_user,
         "posts_counts": posts_counts, "posts_like_counts": posts_like_counts,
         "posts_collect_counts": posts_collect_counts, "posts_liked_counts": posts_liked_counts,
-        "posts_collected_counts": posts_collected_counts, "is_active_post": is_active_post
+        "posts_collected_counts": posts_collected_counts, "is_active_post": is_active_post,
+        "page_num": page_num, "page": page
     })
 
 
@@ -142,12 +170,20 @@ class UserCenterCommentView(View):
         comments = models.Comment.objects.filter(owner=user).filter(~Q(floor_number=0)).order_by("-time")
         comments_counts = comments.count()
 
+        # 分页
+        paginator = Paginator(comments, 6)
+        page_num = request.GET.get('page', '1')
+        try:
+            page = paginator.page(page_num)
+        except(PageNotAnInteger, EmptyPage, InvalidPage):  # 不合法的分页到第一页
+            page = paginator.page('1')
+
         is_active_comment = True
         return render(request, "UserCenter-comment.html", {
             "user": user, "is_same_user": is_same_user, "posts_like_counts": posts_like_counts,
             "posts_collect_counts": posts_collect_counts, "posts_liked_counts": posts_liked_counts,
-            "posts_collected_counts": posts_collected_counts, "comments": comments,
-            "comments_counts": comments_counts, "is_active_comment": is_active_comment
+            "posts_collected_counts": posts_collected_counts, "comments_counts": comments_counts,
+            "is_active_comment": is_active_comment, "page_num": page_num, "page": page
         })
 
 
@@ -189,11 +225,20 @@ class UserCenterReplyView(View):
         replies = models.Reply.objects.filter(owner=user).order_by("-time")
         replies_counts = replies.count()
         is_active_reply = True
+
+        # 分页
+        paginator = Paginator(replies, 6)
+        page_num = request.GET.get('page', '1')
+        try:
+            page = paginator.page(page_num)
+        except(PageNotAnInteger, EmptyPage, InvalidPage):  # 不合法的分页到第一页
+            page = paginator.page('1')
+
         return render(request, "UserCenter-reply.html", {
             "user": user, "is_same_user": is_same_user, "posts_like_counts": posts_like_counts,
             "posts_collect_counts": posts_collect_counts, "posts_liked_counts": posts_liked_counts,
             "posts_collected_counts": posts_collected_counts, "is_active_reply": is_active_reply,
-            "replies": replies, "replies_counts": replies_counts
+            "replies_counts": replies_counts, "page_num": page_num, "page": page
         })
 
 
@@ -242,8 +287,7 @@ class UploadAvatarView(View):
         user.ProfilePicture = '/' + upload_avatar
         user.save()
         request.session['ProfilePicture'] = user.ProfilePicture
-
-        return HttpResponse('OK')
+        return HttpResponse('OK') # 上传头像F12控制台有:Refused to display 'http://127.0.0.1:8000/usercenter/upload/avatar/zhangsan' in a frame because it set 'X-Frame-Options' to 'deny'.
 
 
 class ChangePasswordView(View):

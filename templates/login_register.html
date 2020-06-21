@@ -45,5 +45,33 @@
             </form>
         </div>
     </div>
-{#    <!-- /container -->#}
+    {#    <!-- /container -->#}
+    <style>
+        .captcha {
+            width: 82px;
+            height: 36px;
+            cursor: pointer;
+        }
+
+        #id_captcha_1 {
+            width: 160px;
+        }
+    </style>
+    <script>
+        function codes() {
+            url = '/captcha/refresh?' + Math.random()
+            $.get(url, function (result) {
+                console.log(result.image_url)
+                $('img[class="captcha"]').attr('src', result.image_url)
+                $('#id_captcha_0').attr('value', result.key)
+
+            })
+        }
+
+        $('img[class="captcha"]').mousedown(function () {
+            console.log('备点了')
+            codes()
+        })
+    </script>
 {% endblock %}
+

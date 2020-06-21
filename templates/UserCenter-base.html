@@ -1,6 +1,6 @@
 {#该文件作为个人中心页面父模板，其内容供其他文件继承#}
 <!DOCTYPE html>
-<html>
+{% load message_extras %}
 {#加载静态文件#}
 {% load static %}
 <head>
@@ -20,7 +20,21 @@
     {#当前页面操作的js代码#}
     <script src="{% static 'js/profile.js' %}"></script>
 </head>
-
+<script>
+    $(document).ready(function () {
+        {# each()类似于for循环，找到每一个a标签页码，让这些a标签分别执行each()中的匿名函数#}
+        $("#Pagination > a > button").each(function () {
+            {# 获取当前遍历到这个button标签的文本内容,然后和page.number进行比较，如果当前a标签的文本数字和page.number的值相等#}
+            {# $(this)指的就是遍历出来的a元素 #}
+            if ($(this).html() == {{ page.number }}) {
+                {# 当前按钮失效 #}
+                $(this).attr("disabled", true);
+            }
+            {# 让父元素a标签的事件失效 #}
+            $("button[disabled]").parent("a").css("pointer-events", "none");
+        })
+    })
+</script>
 <body>
 
 <nav class="navbar navbar-default">
@@ -46,7 +60,7 @@
                 {% if request.session.is_login %}
                     <li class="user-pic">
                         <a class="user-pic" href={% url 'center' loginuser=request.session.user_account %}>
-                            <img src="{{ request.session.ProfilePicture }}" alt> </a>
+                            <img src="{% if is_same_user %}{{ user.ProfilePicture }}{% else %}{{ request.session.ProfilePicture }}{% endif %}" alt> </a>
                     </li>
                     <li id="GetLoginuser" data-loginuser="{{ request.session.user_account }}">
                         <a href="{% url 'center' loginuser=request.session.user_account %}">当前在线：{{ request.session.user_account }}</a>
@@ -158,13 +172,39 @@
         {% block MainContent %}
 
         {% endblock %}
+        {#如果分页是1，不显示该div，否则显示分页栏#}
+        {% ifnotequal page.paginator.num_pages 1 %}
+            {#顶部分页栏的显示#}
+            <div id="Pagination">
+                {% if page.has_previous %}
+                    <a href="?page={{ page.previous_page_number }}" aria-label="Previous">
+                        <button type="button" class="Button">
+                            <span aria-hidden="true">&laquo;上一页</span>
+                        </button>
+                    </a>
+                {% endif %}
+
+                {% autoescape off %}
+                    {% custom_paginator page %}
+                {% endautoescape %}
+                {% if page.has_next %}
+                    <a href="?page={{ page.next_page_number }}" aria-label="Next">
+                        <button type="button" class="Button">
+                            <span aria-hidden="true">下一页&raquo;</span>
+                        </button>
+                    </a>
+                {% endif %}
+
+            </div>
+        {% endifnotequal %}
     </div>
+
 
     <!-- 右侧边栏 -->
     <div class="Profile-sideColumn">
         <div class="LikeInfo Info">
             <div class="NumberBoard">
-            {# 只有登录的当前用户才可以跳转到主页，未登录以及访问其他人主页都不能实现跳转 #}
+                {# 只有登录的当前用户才可以跳转到主页，未登录以及访问其他人主页都不能实现跳转 #}
                 {% if is_same_user %}
                     <a type="button" class="Button NumberBoard-item Button--plain" href="/index/">
                         <div class="NumberBoard-itemInner">
@@ -209,7 +249,6 @@
             <p>本系统为一论坛：适用于校园范围内的学习交流休闲娱乐以及生活便利。</p>
         </div>
     </div>
-
 </div>
 
 <div id="CornerButtons">
@@ -256,4 +295,3 @@
 
 </body>
 
-</html>

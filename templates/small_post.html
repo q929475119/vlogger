@@ -11,7 +11,7 @@
 <body>
 
 {#帖子缩略视图#}
-<div class="small_post"  data-loginuser="{{ loginuser }}">
+<div class="small_post"  data-loginuser="{{ loginuser }}" {% if picture %}style="height: 410px"{% endif %}>
     <div class="user-info">
         <div class="profilepicture">
             <a href="/usercenter/{{ post.initiator }}">
@@ -30,7 +30,7 @@
         </div>
 
     </div>
-    <div class="text">
+    <div class="text" {% if picture %}style="height: 300px"{% endif %}>
         <div class="title">
             <a href="/post_detail/{{ post.id }}" style="text-decoration:none;color:black;">
                 {{ post.title }}
@@ -38,9 +38,14 @@
         </div>
         <div class="content">
             <a href="/post_detail/{{ post.id }}" style="text-decoration:none;color:black;">
-                {{ content|truncatewords:60 }}
+                {{ content}}
             </a>
         </div>
+        {% if picture %}
+            <div class="picture" >
+            <img  width="200" height="200" src="{{picture}}" alt="">
+            </div>
+        {% endif %}
     </div>
     <div class="handle" id="small_post{{ post.id }}">
         <li class="like"  style="color:{{ likecolor }}" data-a="{{ post.id }}"  ><span class="zan"><i class="{{ like_icon }}" style="margin-right:3px"></i>点赞</span></li>

@@ -32,7 +32,7 @@
                 </div>
             </div>
 
-            {% if not first_comments %}
+            {% if not posts_counts %}
                 <div class="no_show">
                     <div>还没有帖子</div>
                 </div>
@@ -40,9 +40,9 @@
 
             <div>
                 {#一个奇怪的问题，div加上tabindex="0"，在chrome点击这个div区域会出现蓝色边框#}
-                {% for first_comment in first_comments %}
+                {% for first_comment in page %}
                     <div class="Post-item">
-                        <div class="small_post">
+                        <div class="small_post" {% if first_comment.img %}style="height: 410px"{% endif %}>
                             <div class="user-info">
                                 <div class="profilepicture">
                                     <a href="/usercenter/{{ first_comment.owner.account }}">
@@ -62,7 +62,7 @@
                                 </div>
 
                             </div>
-                            <div class="text">
+                            <div class="text" {% if first_comment.img %}style="height: 275px"{% endif %}>
                                 <div class="title">
                                     <a href="/post_detail/{{ first_comment.post.id }}"
                                        style="text-decoration:none;color:black;">
@@ -72,10 +72,21 @@
                                 <div class="content">
                                     <a href="/post_detail/{{ first_comment.post.id }}"
                                        style="text-decoration:none;color:black;">
-                                        {{ first_comment.discussion|truncatewords:60 }}
+                                        {% if first_comment.discussion|length > 60 %}
+                                            {{ first_comment.discussion|slice:60 }}...
+                                        {% else %}
+                                            {{ first_comment.discussion }}
+                                        {% endif %}
                                     </a>
                                 </div>
+                                {% if first_comment.img %}
+                                    <div class="picture" id="s_post{{ first_comment.post.id }}"
+                                         data-src="{{ first_comment.img }}">
+                                        <img width="200" id="picture" height="200" src="{{ first_comment.img }}" alt>
+                                    </div>
+                                {% endif %}
                             </div>
+
                             {#如果会话中没有登录账户，那么不能点击这三个按钮；否则除了前端样式改变，还需要从数据库中获取样式，#}
                             {#这里通过所有外键是帖子的集合判断是否有点赞、反对、收藏#}
                             {% if request.session.user_account %}

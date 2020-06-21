@@ -45,15 +45,15 @@
     font-size: 16px;
     cursor: pointer;
 }
-.block:hover{
-    background-color: rgba(255,255,255,0.2);
-}
+/*.block:hover{*/
+/*    background-color: rgba(255,255,255,0.2);*/
+/*}*/
 .child_block{
     position:absolute;
-    left: 465px;
-    top: 420px;
+    left: 180px;
+    top: 0px;
     width:200px;
-    background-color: #b6b6b6;
+    /*background-color: #b6b6b6;*/
     z-index:999;
 }
 

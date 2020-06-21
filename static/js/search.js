@@ -2,7 +2,7 @@
         let isInsearchbox = false;
         $('#search_txt').on('focus', function () {
             //当文本框的内容不为空(包括空串和空格，消除空格)
-                $('#search_btn').css({ 'background-color': '#e33e33' });
+                $('#search_btn').css({ 'background-color': 'rgb(235, 115, 80)' });
         });
         $('#search_txt').on('mouseenter',function () {
               isInsearchbox = true;
@@ -12,7 +12,7 @@
         })
       $(document).on('click',function () {
           if (isInsearchbox) {
-              $('#search_btn').css({'background-color': '#e33e33'});
+              $('#search_btn').css({'background-color': 'rgb(235, 115, 80)'});
 
           } else {
               $('#search_btn').css({'background-color': '#d5d0d0'});
@@ -146,7 +146,7 @@ $(function() {
         var scrollTop = $(this).scrollTop();
         var scrollHeight = $(document).height();
         var windowHeight = $(this).height();
-        if (scrollTop + windowHeight == scrollHeight&&j<a.length) {
+        if (scrollTop + windowHeight >= scrollHeight&&j<a.length) {
             loadsmallpost(j)
             j++;
         }
